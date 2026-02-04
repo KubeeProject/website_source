@@ -21,37 +21,37 @@ $extra_info = "";
 // 로직 분기
 switch ($mode) {
     case 'cpu':
-        // [CPU 부하] 암호화 해시 연산 30만번 반복
-        $iterations = 300000; 
+        // [CPU 부하] 암호화 해시 연산 5만번 반복 -> 크레딧 우려로 30만에서 축소
+        $iterations = 50000; 
         for ($i = 0; $i < $iterations; $i++) {
             hash('sha256', 'kubee_load_test_' . $i);
         }
-        $message = "🔥 CPU Load Test Done";
-        $extra_info = "SHA-256 Hash {$iterations} iterations";
+        $message = "🔥 CPU Load (Safe Mode)";
+        $extra_info = "Hash calculated {$iterations} times.";
         break;
 
     case 'memory':
-        // [메모리 부하] 50MB 문자열 할당
+        // [메모리 부하] 50MB 문자열 할당 -> 5mb로 축소 (프리 티어인 1gb 내에서 여러 팀원이 동시에 눌러도 서버가 죽지 않도록 조절)
         try {
-            $chunk = str_repeat('A', 1024 * 1024 * 50); 
-            $message = "🧠 Memory Load Test Done";
-            $extra_info = "Allocated 50MB String to RAM";
+            $chunk = str_repeat('A', 1024 * 1024 * 5); 
+            $message = "🧠 Memory Load (Safe Mode)";
+            $extra_info = "Allocated 5MB String to RAM";
         } catch (Exception $e) {
             $message = "Memory Allocation Failed";
         }
         break;
 
     case 'latency':
-        // [지연 시뮬레이션] 2초간 강제 대기
-        sleep(2);
-        $message = "🐢 Latency Test Done";
-        $extra_info = "Sleep for 2 seconds";
+        // [지연 시뮬레이션] 2초간 강제 대기 -> 1초만 지연
+        sleep(1);
+        $message = "🐢 Latency Test";
+        $extra_info = "Sleep for 1 seconds";
         break;
 
     case 'error':
-        // [에러 시뮬레이션] 500 에러 발생
+        // [에러 시뮬레이션] 500 에러 발생 (에러율 모니터링)
         http_response_code(500);
-        $message = "❌ 500 Internal Server Error Generated";
+        $message = "❌ 500 Internal Server Error";
         error_log("Kubee Load Tester: Intentional 500 Error");
         break;
 
@@ -66,22 +66,22 @@ switch ($mode) {
             // 1. 로그 테이블이 없으면 생성
             $sql = "CREATE TABLE IF NOT EXISTS load_logs (
                 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                log_data VARCHAR(50),
+                log_data VARCHAR(20),
                 reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )";
             $conn->query($sql);
 
-            // 2. 데이터 INSERT (부하 발생)
-            for($i=0; $i<50; $i++){
+            // 2. 데이터 INSERT (부하 발생) -> 50회에서 5회로 축소
+            for($i=0; $i<5; $i++){
                 $conn->query("INSERT INTO load_logs (log_data) VALUES ('Load Test Data " . rand() . "')");
             }
 
-            // 3. 데이터 Count (조회)
+            // 3. 데이터 조회 (Query Count 모니터링용)
             $result = $conn->query("SELECT COUNT(*) as cnt FROM load_logs");
             $row = $result->fetch_assoc();
             
-            $message = "kys DB Load Test Done (Insert/Select)";
-            $extra_info = "Total Rows in DB: " . $row['cnt'];
+            $message = "🗄️ DB Load (Safe Mode)";
+            $extra_info = "Inserted 5 rows. Total Rows: " . $row['cnt'];
             
             $conn->close();
         }
@@ -90,7 +90,7 @@ switch ($mode) {
     case 'normal':
     default:
         $message = "✅ Normal Mode";
-        $extra_info = "Fast Response (No Load)";
+        $extra_info = "System is healthy.";
         break;
 }
 
@@ -103,48 +103,48 @@ $duration = round($end_time - $start_time, 4);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kubee Load Tester</title>
+    <title>Kubee Safe Load Tester</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; text-align: center; padding: 50px; }
-        h1 { color: #5a5a5a; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .status-box { background-color: #e9ecef; padding: 20px; border-radius: 5px; margin: 20px 0; }
-        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 30px; }
-        .btn { padding: 15px; border-radius: 8px; text-decoration: none; color: white; font-weight: bold; transition: 0.3s; display: block; }
-        .btn:hover { opacity: 0.8; transform: scale(1.02); }
-        .normal { background-color: #28a745; }
-        .cpu { background-color: #dc3545; }
-        .memory { background-color: #fd7e14; }
-        .db { background-color: #6f42c1; }
-        .latency { background-color: #17a2b8; }
-        .error { background-color: #6c757d; }
-        .metrics { margin-top: 30px; font-size: 0.9em; }
-        .metrics a { color: #007bff; text-decoration: none; }
+        body { font-family: sans-serif; background-color: #f0f2f5; text-align: center; padding: 40px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { margin-bottom: 10px; color: #333; }
+        .server-ip { color: #666; margin-bottom: 30px; }
+        .result-box { background-color: #eef2ff; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 1px solid #d0d7de; }
+        .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .btn { padding: 15px; border-radius: 8px; text-decoration: none; color: white; font-weight: bold; font-size: 1.1em; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; transform: scale(1.02); }
+        .normal { background-color: #10b981; grid-column: span 2; }
+        .cpu { background-color: #ef4444; }
+        .memory { background-color: #f59e0b; }
+        .db { background-color: #8b5cf6; }
+        .latency { background-color: #3b82f6; }
+        .error { background-color: #6b7280; grid-column: span 2; margin-top: 10px;}
+        .footer { margin-top: 30px; font-size: 0.9em; }
+        .footer a { color: #2563eb; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Kubee Load Tester</h1>
-        <p>Server IP: <strong><?php echo $_SERVER['SERVER_ADDR']; ?></strong></p>
+        <h1>🛡️ Kubee Safe Load Tester</h1>
+        <p class="server-ip">Server IP: <?php echo $_SERVER['SERVER_ADDR']; ?></p>
 
-        <div class="status-box">
-            <h2><?php echo $message; ?></h2>
-            <p><?php echo $extra_info; ?></p>
-            <p><small>Processing Time: <?php echo $duration; ?> sec</small></p>
+        <div class="result-box">
+            <h2 style="margin:0;"><?php echo $message; ?></h2>
+            <p style="margin:10px 0 0; color:#555;"><?php echo $extra_info; ?></p>
+            <p style="margin:5px 0 0; font-size:0.8em; color:#888;">Time: <?php echo $duration; ?>s</p>
         </div>
 
-        <h3>Select Load Mode:</h3>
         <div class="btn-grid">
-            <a href="?mode=normal" class="btn normal">✅ Normal</a>
-            <a href="?mode=cpu" class="btn cpu">🔥 CPU Load</a>
-            <a href="?mode=memory" class="btn memory">🧠 Memory Load</a>
-            <a href="?mode=db" class="btn db">🗄️ DB Load</a>
-            <a href="?mode=latency" class="btn latency">🐢 Latency (2s)</a>
-            <a href="?mode=error" class="btn error">❌ 500 Error</a>
+            <a href="?mode=normal" class="btn normal">✅ Normal (Reset)</a>
+            <a href="?mode=cpu" class="btn cpu">🔥 CPU (Lite)</a>
+            <a href="?mode=memory" class="btn memory">🧠 RAM (5MB)</a>
+            <a href="?mode=db" class="btn db">🗄️ DB (5 Rows)</a>
+            <a href="?mode=latency" class="btn latency">🐢 Latency (1s)</a>
+            <a href="?mode=error" class="btn error">❌ Error (500)</a>
         </div>
 
-        <div class="metrics">
-            <p>Monitoring Link: <a href="/stub_status" target="_blank">📊 Nginx Metrics (Stub Status)</a></p>
+        <div class="footer">
+            <p>Monitoring: <a href="/stub_status" target="_blank">Nginx Metrics</a></p>
         </div>
     </div>
 </body>
