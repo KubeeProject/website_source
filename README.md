@@ -7,7 +7,7 @@
 - **CPU Load:** SHA-256 해시 연산 반복을 통한 CPU 부하 유발
 - **Memory Load:** 대용량 문자열 할당을 통한 메모리 점유
 - **DB Load:** AWS RDS(MySQL)에 접속하여 Insert/Select 쿼리 반복 수행
-- **Latency:** 2초 지연 응답 시뮬레이션
+- **Latency:** 1초 지연 응답 시뮬레이션
 - **Error:** 500 Internal Server Error 강제 발생
 
 ## 배포 방식
