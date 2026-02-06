@@ -1,4 +1,19 @@
 <?php
+// [신규 기능] 서버 재배정 요청 (쿠키 삭제)
+// --------------------------------------------------------------------
+if (isset($_GET['mode']) && $_GET['mode'] == 'reset_connection') {
+    // AWS ALB가 사용하는 고정 세션 쿠키 삭제
+    setcookie('AWSALB', '', time() - 3600, '/');
+    setcookie('AWSALBAPP', '', time() - 3600, '/');
+    // PHP 세션 쿠키 삭제
+    if (session_id()) {
+        session_destroy();
+    }
+    // 메인 페이지로 리다이렉트 (새로고침 효과)
+    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+    exit;
+}
+
 // [중요] DB 설정 로드
 if (file_exists('db_config.php')) {
     include 'db_config.php';
@@ -162,6 +177,7 @@ $duration = round($end_time - $start_time, 4);
         .error { background-color: #6b7280; grid-column: span 2; margin-top: 10px;}
         .footer { margin-top: 30px; font-size: 0.9em; color: #888; }
         .footer a { color: #2563eb; text-decoration: none; }
+        .reconnect { background-color: #1f2937; grid-column: span 2; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -192,6 +208,7 @@ $duration = round($end_time - $start_time, 4);
             <a href="?mode=db" class="btn db">🗄️ DB (50 Rows)</a>
             <a href="?mode=latency" class="btn latency">🐢 Latency (2s)</a>
             <a href="?mode=error" class="btn error">❌ Error (500)</a>
+            <a href="?mode=reset_connection" class="btn reconnect">🔄 Re-roll Server (Switch AZ)</a>
         </div>
 
         <div class="footer">
