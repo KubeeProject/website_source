@@ -44,7 +44,8 @@ jobs:
               "echo [Deploy] 권한 재설정...",
               "sudo chown -R ubuntu:ubuntu /var/www/html",
               "sudo chmod -R 755 /var/www/html",
-              
+              "sudo docker restart nginx_web",
+              "echo [Deploy] Nginx Restarted!",
               "echo [Deploy] Success! 🎉",
               "echo ---------------------------------"
             ]' \
