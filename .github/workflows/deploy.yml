@@ -32,13 +32,19 @@ jobs:
             --comment "Auto deployment from GitHub Actions" \
             --parameters commands='[
               "echo ---------------------------------",
-              "echo [Deploy] Starting git pull...",
               "cd /var/www/html",
-              "sudo git pull origin main",
-              "echo [Deploy] Git pull complete!",
-              "echo [Deploy] Resetting permissions...",
+              
+              "echo [Deploy] Git 보안 예외 설정 (Dubious Ownership 해결)",
+              "sudo git config --system --add safe.directory /var/www/html",
+              
+              "echo [Deploy] 최신 코드 강제 동기화 (Force Pull)",
+              "sudo git fetch --all",
+              "sudo git reset --hard origin/main",
+              
+              "echo [Deploy] 권한 재설정...",
               "sudo chown -R ubuntu:ubuntu /var/www/html",
               "sudo chmod -R 755 /var/www/html",
+              
               "echo [Deploy] Success! 🎉",
               "echo ---------------------------------"
             ]' \
