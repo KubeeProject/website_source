@@ -35,7 +35,6 @@ jobs:
               "cd /var/www/html",
 
               "echo [Deploy] 1. Fix Git Security Issue",
-              # 이 줄이 가장 중요합니다. 시스템 전체가 아닌 실행 계정(root)에 박아버립니다.
               "sudo git config --global --add safe.directory /var/www/html",
 
               "echo [Deploy] 2. Force Pulling latest code",
@@ -47,7 +46,6 @@ jobs:
               "sudo chmod -R 755 /var/www/html",
 
               "echo [Deploy] 4. Reloading Nginx",
-              # 파일이 바뀌었으니 Nginx가 새 코드를 인식하도록 리로드합니다.
               "sudo docker exec nginx_web nginx -s reload || true",
 
               "echo [Deploy] All processes completed successfully!"
