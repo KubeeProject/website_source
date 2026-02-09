@@ -1,0 +1,47 @@
+name: Deploy to AWS Web Server
+# website_source의 워크플로우
+# 1. 언제 실행할까? -> main 브랜치에 코드가 push 되었을 때
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. AWS 로그인 (GitHub Secrets 사용)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2  # 서울 리전
+
+      # 3. 배포 명령 (SSM으로 EC2에게 명령 하달)
+      - name: Deploy to EC2 via SSM
+        run: |
+          echo "🚀 Starting Deployment via AWS SSM..."
+          
+          # [핵심] 'KuBee-Second-Web-Server' 태그를 가진 모든 EC2를 찾아서 명령을 보냄
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=tag:Name,Values=KuBee-Second-Web-Server" \
+            --comment "Auto deployment from GitHub Actions" \
+            --parameters commands='[
+              "echo ---------------------------------",
+              "echo [Deploy] Starting git pull...",
+              "cd /var/www/html",
+              "sudo git pull origin main",
+              "echo [Deploy] Git pull complete!",
+              "echo [Deploy] Resetting permissions...",
+              "sudo chown -R ubuntu:ubuntu /var/www/html",
+              "sudo chmod -R 755 /var/www/html",
+              "echo [Deploy] Success! 🎉",
+              "echo ---------------------------------"
+            ]' \
+            --region ap-northeast-2
+            
+          echo "✅ Deployment command sent!"
