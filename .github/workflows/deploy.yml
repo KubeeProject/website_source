@@ -31,16 +31,26 @@ jobs:
             --targets "Key=tag:Name,Values=KuBee-Second-Web-Server" \
             --comment "Auto deployment from GitHub Actions" \
             --parameters commands='[
-              "echo ---------------------------------",
-              "echo [Deploy] Starting git pull...",
+              "set -e",
               "cd /var/www/html",
-              "sudo git pull origin main",
-              "echo [Deploy] Git pull complete!",
-              "echo [Deploy] Resetting permissions...",
-              "sudo chown -R ubuntu:ubuntu /var/www/html",
+
+              "echo [Deploy] 1. Fix Git Security Issue",
+              # 이 줄이 가장 중요합니다. 시스템 전체가 아닌 실행 계정(root)에 박아버립니다.
+              "sudo git config --global --add safe.directory /var/www/html",
+
+              "echo [Deploy] 2. Force Pulling latest code",
+              "sudo git fetch --all",
+              "sudo git reset --hard origin/main",
+
+              "echo [Deploy] 3. Setting Permissions",
+              "sudo chown -R root:root /var/www/html",
               "sudo chmod -R 755 /var/www/html",
-              "echo [Deploy] Success! 🎉",
-              "echo ---------------------------------"
+
+              "echo [Deploy] 4. Reloading Nginx",
+              # 파일이 바뀌었으니 Nginx가 새 코드를 인식하도록 리로드합니다.
+              "sudo docker exec nginx_web nginx -s reload || true",
+
+              "echo [Deploy] All processes completed successfully!"
             ]' \
             --region ap-northeast-2
             
