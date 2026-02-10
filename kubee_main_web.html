@@ -338,8 +338,8 @@
           </div>
         </div>
         <div>
-          <h3>K3s 자동화 및 무중단 배포</h3>
-          <p>Ansible Playbook을 통해 배포 과정을 자동화하고, K3s의 Rolling Update 전략을 결합하여 가동 중단 시간(Downtime) 0초를 실현했습니다. Readiness Probe를 설정하여 신규 Pod의 정상 동작 확인 후 교체되도록 구성, 안정적인 서비스 전환을 보장합니다.</p>
+          <h3>IaC 기반 인프라 형상 관리</h3>
+          <p>Terraform을 활용하여 VPC, EC2, RDS 등 모든 AWS 리소스를 코드로 정의하고 관리합니다. S3 Backend와 DynamoDB State Locking을 도입하여 팀원 간의 충돌 없는 안정적인 협업 환경과 인프라 버전 관리를 구현했습니다.</p>
         </div>
       </div>
 
@@ -356,8 +356,8 @@
           </div>
         </div>
         <div>
-          <h3>지능형 Auto Scaling</h3>
-          <p>Terraform의 Target Tracking 정책을 활용하여 CPU 사용률 50%를 일정하게 유지하는 지능형 리소스 최적화를 구현했습니다. 스트레스 테스트를 통해 트래픽 급증 시 서버가 자동으로 확장되는 유연성을 증명했습니다.</p>
+          <h3>보안 중심의 인프라 2-Tier, 소프트웨어 3-tier 아키텍처</h3>
+          <p>Public/Private Subnet을 철저히 분리하여 외부의 직접적인 접근을 차단했습니다. 비용 절감을 위해 Web/App 단계를 합치고, Bastion Host와 NAT Gateway를 통해서만 제어 가능한 안전한 네트워크 환경을 구축하고, Security Group을 통해 엄격한 접근 제어(ACL)를 적용했습니다.</p>
         </div>
       </div>
 
@@ -376,7 +376,7 @@
         </div>
         <div>
           <h3>운영 시각화 및 모니터링</h3>
-          <p>오픈소스 모니터링 솔루션을 구축하여 인프라 비용을 절감하고, K3s 클러스터 내 Pod 상태 및 리소스(CPU/Mem) 사용량을 실시간으로 시각화했습니다. Grafana 대시보드를 통해 팀 전체가 서비스 상태를 한눈에 파악할 수 있는 데이터 기반의 운영 환경을 조성했습니다.</p>
+          <p>오픈소스 모니터링 솔루션을 구축하여 인프라 비용을 절감하고, 리소스(CPU/Mem) 사용량을 실시간으로 시각화했습니다. Grafana 대시보드를 통해 팀 전체가 서비스 상태를 한눈에 파악할 수 있는 데이터 기반의 운영 환경을 조성했습니다.</p>
         </div>
       </div>
 
@@ -394,8 +394,8 @@
           </div>
         </div>
         <div>
-          <h3>CI/CD 자동화의 완성</h3>
-          <p>GitHub Actions와 Terraform을 연동하여 인프라 변경부터 배포까지 전 과정을 자동화했습니다. 코드 한 줄로 인프라가 배포되는 '자동화의 끝'을 실현하여 개발 생산성을 극대화했습니다.</p>
+          <h3>Github Actions CI/CD</h3>
+          <p>GitHub Actions와 Terraform을 연동하여 인프라 변경부터 배포까지 전 과정을 Github로 자동화했습니다. 동일한 환경에서 모든 팀원들이 코드 수정 및 배포 과정에 참여가 가능하여 협업에 매우 용이합니다. </p>
         </div>
       </div>
     </div>
