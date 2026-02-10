@@ -410,7 +410,7 @@
           </svg>
           부하 테스트
         </a>
-        <a href="http://52.78.90.167:3000/" class="demo-btn" target="_blank" rel="noopener noreferrer">
+        <a id="grafana-link" href="#" class="demo-btn" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
             <line x1="6" y1="20" x2="6" y2="14"/>
@@ -521,6 +521,7 @@
   </div>
 </footer>
 
+<script src="bastion_config.js"></script>
 <script>
   function toggleMenu() {
     const menu = document.getElementById('mobileMenu');
@@ -535,6 +536,18 @@
     document.getElementById('menu-icon').style.display = 'block';
     document.getElementById('close-icon').style.display = 'none';
   }
+  document.addEventListener("DOMContentLoaded", function() {
+    // 1. 시각화 버튼 요소를 찾습니다. (ID를 줘야 함)
+    const grafanaBtn = document.getElementById("grafana-link");
+    
+    // 2. config.js에 있는 IP가 있다면 링크를 수정합니다.
+    if (typeof BASTION_IP !== 'undefined') {
+      // 기존 링크: http://Bastion_IP:3000
+      grafanaBtn.href = "http://" + BASTION_IP + ":3000";
+    } else {
+      console.warn("Bastion IP 설정이 없습니다.");
+    }
+  });
 </script>
 
 </body>
