@@ -5058,13 +5058,10 @@
         "type": "interval"
       },
       {
-        "current": {
-          "text": "10.100.11.181:9104",
-          "value": "10.100.11.181:9104"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "afe99j63u6j28c"
+          "uid": "prometheus"
         },
         "definition": "label_values(mysql_up, instance)",
         "includeAll": false,
