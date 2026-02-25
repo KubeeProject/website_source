@@ -23,7 +23,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afe99j63u6j28c"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -118,7 +118,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afe99j63u6j28c"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -202,7 +202,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "afe99j63u6j28c"
+            "uid": "prometheus"
           },
           "editorMode": "code",
           "expr": "1 - (sum(rate(nginx_log_http_response_time_seconds_hist_bucket{le=\"1.0\"}[1m])) / sum(rate(nginx_log_http_response_time_seconds_count[1m])))",
